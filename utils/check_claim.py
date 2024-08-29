@@ -10,7 +10,7 @@ class TonAirdropClaim:
     async def check_airdrop(cls) -> dict | None:
         async with aiohttp.ClientSession() as http_client:
             try:
-                res = await http_client.get(cls.url)
+                res = await http_client.get(cls.url, ssl=False)
                 res.raise_for_status()
                 response_json = await res.json()
                 return response_json
