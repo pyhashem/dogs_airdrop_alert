@@ -32,10 +32,10 @@ bot: TelegramClient = TelegramClient(None, API_ID, API_HASH)
 
 
 REPORT_MESSAGE: str = lambda s, d: f'''
-🪙 Token withdrawal status: **{"🟩 Open" if s == False else "🟥 Close"}**\n
-🪙 Статус вывода токена: **{"🟩 открыть" if s == False else "🟥 Закрыто"}**\n
-🪙 وضعیت برداشت توکن : **{"🟩 باز " if s == False else "🟥 بسته "}**\n
-#dogs #dogs_airdrop #dogsclaim
+🪙 Token withdrawal status: **{"🟩 Open" if s == False else "🟥 Close"}**
+🪙 Статус вывода токена: **{"🟩 открыть" if s == False else "🟥 Закрыто"}**
+🪙 وضعیت برداشت توکن : **{"🟩 باز " if s == False else "🟥 بسته "}**
+#dogs #dogs_airdrop #dogsclaim\n
 📅 **{d}**
 '''
 
@@ -43,6 +43,8 @@ REPORT_MESSAGE: str = lambda s, d: f'''
 async def send_report():
     TonAirdropClaim.url = 'https://ethsign-common.s3.us-east-1.amazonaws.com/cms/ton-airdrop-claim.json'
     
+    is_already_pin: bool = False
+
     while True:
         await asyncio.sleep(CHECK_TIME)
         logger.info('Checking Airdrop...')
@@ -55,7 +57,9 @@ async def send_report():
                 is_dogs_airdrop: bool = True if x.get('data', {}).get('slug') == 'dogs' else False
 
                 if is_dogs_airdrop:
-                    is_busy: bool = x.get('data', {}).get('isBusy', True)
+                    is_busy: str = x.get('data', {}).get('isBusy', 'true')
+                    is_busy: bool = False if is_busy == 'false' else True
+
                     timenow = datetime.now()
 
                     message: str = REPORT_MESSAGE(s=is_busy, d=timenow)
@@ -63,7 +67,8 @@ async def send_report():
                     try:
                         msg: types.Message = await bot.send_message(CHANNEL, message)
 
-                        if not is_busy:
+                        if not is_busy and not is_already_pin:
+                            is_already_pin = True
                             await msg.pin()
 
                     except Exception as e:
