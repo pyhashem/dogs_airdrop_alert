@@ -32,9 +32,10 @@ bot: TelegramClient = TelegramClient(None, API_ID, API_HASH)
 
 
 REPORT_MESSAGE: str = lambda s, d: f'''
-🪙 Token withdrawal status: **{"🟩 Open" if s == False else "🟥 Close"}**
-🪙 Статус вывода токена: **{"🟩 открыть" if s == False else "🟥 Закрыто"}**
-🪙 وضعیت برداشت توکن : **{"🟩 باز " if s == False else "🟥 بسته "}**
+**[ {"🟢 Open" if s == False else "🔴 Close"} ]** Token withdrawal status
+**[ {"🟢 открыть" if s == False else "🔴 Закрыто"} ]** Статус вывода токена
+**[ {"🟢 باز " if s == False else "🔴 بسته "} ]** وضعیت برداشت توکن 
+
 #dogs #dogs_airdrop #dogsclaim\n
 📅 **{d}**
 '''
