@@ -36,7 +36,7 @@ REPORT_MESSAGE: str = lambda s, d: f'''
 **[ {"🟢 открыть" if s == False else "🔴 Закрыто"} ]** Статус вывода токена
 **[ {"🟢 باز " if s == False else "🔴 بسته "} ]** وضعیت برداشت توکن 
 
-#dogs #dogs_airdrop #dogsclaim\n
+#dogs #dogs_airdrop #dogsclaim #tokentable_bot #tokentable\n
 📅 **{d}**
 '''
 
