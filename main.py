@@ -42,38 +42,24 @@ REPORT_MESSAGE: str = lambda s, d: f'''
 
 
 async def send_report():
-    TonAirdropClaim.url = 'https://ethsign-common.s3.us-east-1.amazonaws.com/cms/ton-airdrop-claim.json'
+    TonAirdropClaim.url = 'https://withdrawal.onetime.dog/withdrawal/2cd43l72TvK_W5wt9LvXFg'
     
-    is_already_pin: bool = False
-
     while True:
         await asyncio.sleep(CHECK_TIME)
         logger.info('Checking Airdrop...')
         res = await TonAirdropClaim.check_airdrop()
         logger.info(res)
 
-        if isinstance(res, list):
+        if isinstance(res, dict):
+            is_withdrawal_busy: bool = False if res.get('error') == 'No choose option' and res.get('ok') == False else True
             
-            for x in res:
-                is_dogs_airdrop: bool = True if x.get('data', {}).get('slug') == 'dogs' else False
+            timenow = datetime.now()
+            message: str = REPORT_MESSAGE(s=is_withdrawal_busy, d=timenow)
 
-                if is_dogs_airdrop:
-                    is_busy: str = x.get('data', {}).get('isBusy', 'true')
-                    is_busy: bool = False if is_busy == 'false' else True
-
-                    timenow = datetime.now()
-
-                    message: str = REPORT_MESSAGE(s=is_busy, d=timenow)
-
-                    try:
-                        msg: types.Message = await bot.send_message(CHANNEL, message)
-
-                        if not is_busy and not is_already_pin:
-                            is_already_pin = True
-                            await msg.pin()
-
-                    except Exception as e:
-                        logger.error(f'{Color.RED} Send Report Error : {e}')
+            try:
+                msg: types.Message = await bot.send_message(CHANNEL, message)
+            except Exception as e:
+                logger.error(f'{Color.RED} Send Report Error : {e}')
 
 
 
